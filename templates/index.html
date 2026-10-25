@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>AI Image Generator</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>AI Image Generator</h1>
+
+    <p class="subtitle">
+        Generate images using natural-language prompts
+    </p>
+
+    <div class="generator-box">
+
+        <textarea
+            id="prompt"
+            placeholder="Describe the image you want to generate..."
+        ></textarea>
+
+        <button id="generateBtn" onclick="generateImage()">
+            Generate Image
+        </button>
+
+        <div id="loading" class="loading">
+            Generating image...
+        </div>
+
+        <div id="error" class="error"></div>
+
+        <div id="result" class="result">
+
+            <img
+                id="generatedImage"
+                src=""
+                alt="Generated Image"
+            >
+
+            <br>
+
+            <a
+                id="downloadBtn"
+                class="download-btn"
+                href=""
+                download="generated-image.png"
+            >
+                Download Image
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+async function generateImage() {
+
+    const prompt =
+        document.getElementById("prompt").value.trim();
+
+    const button =
+        document.getElementById("generateBtn");
+
+    const loading =
+        document.getElementById("loading");
+
+    const error =
+        document.getElementById("error");
+
+    const result =
+        document.getElementById("result");
+
+    const image =
+        document.getElementById("generatedImage");
+
+    const download =
+        document.getElementById("downloadBtn");
+
+
+    // Reset previous messages
+
+    error.innerText = "";
+
+    result.style.display = "none";
+
+
+    if (!prompt) {
+
+        error.innerText =
+            "Please enter a prompt.";
+
+        return;
+    }
+
+
+    // Disable button
+
+    button.disabled = true;
+
+    loading.style.display = "block";
+
+
+    try {
+
+        const response = await fetch("/generate", {
+
+            method: "POST",
+
+            headers: {
+                "Content-Type": "application/json"
+            },
+
+            body: JSON.stringify({
+                prompt: prompt
+            })
+
+        });
+
+
+        const data = await response.json();
+
+
+        if (!data.success) {
+
+            throw new Error(data.error);
+
+        }
+
+
+        // Display generated image
+
+        image.src = data.image;
+
+        download.href = data.image;
+
+
+        result.style.display = "block";
+
+
+    } catch (err) {
+
+        error.innerText =
+            "Error: " + err.message;
+
+    }
+
+
+    button.disabled = false;
+
+    loading.style.display = "none";
+
+}
+
+</script>
+
+</body>
+
+</html>

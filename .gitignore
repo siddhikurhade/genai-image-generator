@@ -1,0 +1,25 @@
+
+# Secrets
+.env
+.env.*
+
+# Python environments
+.venv/
+.venv-local/
+venv/
+__pycache__/
+*.py[cod]
+
+# Generated images
+generated/*
+!generated/.gitkeep
+
+# Downloaded models and caches
+models/
+.cache/
+huggingface_cache/
+
+# IDE and operating system
+.vscode/
+.DS_Store
+Thumbs.db
